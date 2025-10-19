@@ -319,54 +319,60 @@
         let startTime = 0;
         let gamePrompt = '';
         let currentCategory = '';
+        let audioContext = null;
         
         // Create audio context and sounds
         function createAudioContext() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            return audioContext;
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return null;
+            return new AudioContext();
         }
         
-        function createTickingSound(audioContext) {
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
+        function createTickingSound(context) {
+            if (!context || context.state === 'closed') return;
+            
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
             
             oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            gainNode.connect(context.destination);
             
-            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.setValueAtTime(800, context.currentTime);
             oscillator.type = 'square';
             
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
-            gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.1);
+            gainNode.gain.setValueAtTime(0, context.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.1, context.currentTime + 0.01);
+            gainNode.gain.linearRampToValueAtTime(0, context.currentTime + 0.1);
             
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.1);
+            oscillator.start(context.currentTime);
+            oscillator.stop(context.currentTime + 0.1);
         }
         
-        function createExplosionSound(audioContext) {
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            const filter = audioContext.createBiquadFilter();
+        function createExplosionSound(context) {
+            if (!context || context.state === 'closed') return;
+            
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
+            const filter = context.createBiquadFilter();
             
             oscillator.connect(filter);
             filter.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            gainNode.connect(context.destination);
             
-            oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
-            oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.5);
+            oscillator.frequency.setValueAtTime(200, context.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(50, context.currentTime + 0.5);
             oscillator.type = 'sawtooth';
             
             filter.type = 'lowpass';
-            filter.frequency.setValueAtTime(2000, audioContext.currentTime);
-            filter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
+            filter.frequency.setValueAtTime(2000, context.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(100, context.currentTime + 0.5);
             
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            gainNode.gain.setValueAtTime(0, context.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.3, context.currentTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
             
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 0.5);
+            oscillator.start(context.currentTime);
+            oscillator.stop(context.currentTime + 0.5);
         }
         
         // Prompt database (simulating Excel file data)
@@ -426,7 +432,145 @@
             { category: "General", prompt: "Name professions" },
             { category: "General", prompt: "Name car brands" },
             { category: "General", prompt: "Name clothing items" },
-            { category: "General", prompt: "Name school subjects" }
+            { category: "General", prompt: "Name school subjects" },
+
+            // New Prompts: Celebrities Category (Inspired by actors, musicians, hosts)
+            { category: "Celebrities", prompt: "Name Hollywood actors" },
+            { category: "Celebrities", prompt: "Name famous rappers" },
+            { category: "Celebrities", prompt: "Name talk show hosts" },
+            { category: "Celebrities", prompt: "Name South African celebrities" },
+            { category: "Celebrities", prompt: "Name pop singers" },
+            { category: "Celebrities", prompt: "Name award-winning actors" },
+            { category: "Celebrities", prompt: "Name comedian actors" },
+            { category: "Celebrities", prompt: "Name music legends" },
+            { category: "Celebrities", prompt: "Name TV personalities" },
+            { category: "Celebrities", prompt: "Name hip-hop artists" },
+            { category: "Celebrities", prompt: "Name film directors" },
+            { category: "Celebrities", prompt: "Name reality stars" },
+
+            // Landmarks Category
+            { category: "Landmarks", prompt: "Name world landmarks" },
+            { category: "Landmarks", prompt: "Name African landmarks" },
+            { category: "Landmarks", prompt: "Name natural wonders" },
+            { category: "Landmarks", prompt: "Name historical sites" },
+            { category: "Landmarks", prompt: "Name mountain peaks" },
+            { category: "Landmarks", prompt: "Name bridges" },
+            { category: "Landmarks", prompt: "Name deserts" },
+            { category: "Landmarks", prompt: "Name waterfalls" },
+
+            // South African Places Category
+            { category: "South Africa", prompt: "Name South African cities" },
+            { category: "South Africa", prompt: "Name SA landmarks" },
+            { category: "South Africa", prompt: "Name SA beaches" },
+            { category: "South Africa", prompt: "Name SA provinces" },
+            { category: "South Africa", prompt: "Name SA national parks" },
+            { category: "South Africa", prompt: "Name SA malls" },
+            { category: "South Africa", prompt: "Name SA universities" },
+            { category: "South Africa", prompt: "Name SA events" },
+            { category: "South Africa", prompt: "Name SA festivals" },
+            { category: "South Africa", prompt: "Name SA mountains" },
+
+            // Brands Category (Cars, Tech, Food, etc.)
+            { category: "Brands", prompt: "Name car models" },
+            { category: "Brands", prompt: "Name smartphone brands" },
+            { category: "Brands", prompt: "Name clothing brands" },
+            { category: "Brands", prompt: "Name tech companies" },
+            { category: "Brands", prompt: "Name fast food brands" },
+            { category: "Brands", prompt: "Name beverage brands" },
+            { category: "Brands", prompt: "Name insurance companies" },
+            { category: "Brands", prompt: "Name banks" },
+            { category: "Brands", prompt: "Name retail stores" },
+            { category: "Brands", prompt: "Name energy companies" },
+            { category: "Brands", prompt: "Name telecom providers" },
+            { category: "Brands", prompt: "Name fashion labels" },
+            { category: "Brands", prompt: "Name snack brands" },
+
+            // TV Shows & Podcasts Category
+            { category: "TV Podcasts", prompt: "Name popular podcasts" },
+            { category: "TV Podcasts", prompt: "Name drama series" },
+            { category: "TV Podcasts", prompt: "Name comedy shows" },
+            { category: "TV Podcasts", prompt: "Name game shows" },
+            { category: "TV Podcasts", prompt: "Name animated series" },
+            { category: "TV Podcasts", prompt: "Name news programs" },
+            { category: "TV Podcasts", prompt: "Name interview shows" },
+            { category: "TV Podcasts", prompt: "Name South African TV shows" },
+            { category: "TV Podcasts", prompt: "Name international series" },
+            { category: "TV Podcasts", prompt: "Name documentary series" },
+
+            // Sports Teams & Athletes Category
+            { category: "Sports Stars", prompt: "Name rugby players" },
+            { category: "Sports Stars", prompt: "Name soccer clubs" },
+            { category: "Sports Stars", prompt: "Name basketball stars" },
+            { category: "Sports Stars", prompt: "Name tennis tournaments" },
+            { category: "Sports Stars", prompt: "Name Olympic athletes" },
+            { category: "Sports Stars", prompt: "Name cricket teams" },
+            { category: "Sports Stars", prompt: "Name motorsport races" },
+            { category: "Sports Stars", prompt: "Name boxing champions" },
+            { category: "Sports Stars", prompt: "Name golf courses" },
+            { category: "Sports Stars", prompt: "Name SA sports teams" },
+
+            // Culture & History Category
+            { category: "Culture History", prompt: "Name historical figures" },
+            { category: "Culture History", prompt: "Name cultural festivals" },
+            { category: "Culture History", prompt: "Name political movements" },
+            { category: "Culture History", prompt: "Name national holidays" },
+            { category: "Culture History", prompt: "Name traditional foods" },
+            { category: "Culture History", prompt: "Name music styles" },
+            { category: "Culture History", prompt: "Name dance types" },
+            { category: "Culture History", prompt: "Name art movements" },
+            { category: "Culture History", prompt: "Name literary authors" },
+            { category: "Culture History", prompt: "Name inventions" },
+
+            // Modern Trends Category (Tech, Social Media, etc.)
+            { category: "Trends", prompt: "Name social media platforms" },
+            { category: "Trends", prompt: "Name AI tools" },
+            { category: "Trends", prompt: "Name cryptocurrencies" },
+            { category: "Trends", prompt: "Name streaming services" },
+            { category: "Trends", prompt: "Name viral challenges" },
+            { category: "Trends", prompt: "Name meme formats" },
+            { category: "Trends", prompt: "Name online shopping sites" },
+            { category: "Trends", prompt: "Name fitness trends" },
+            { category: "Trends", prompt: "Name gaming consoles" },
+            { category: "Trends", prompt: "Name electric vehicles" },
+            { category: "Trends", prompt: "Name remote work tools" },
+            { category: "Trends", prompt: "Name sustainability brands" },
+
+            // Desserts & Sweets Category (Expanding Food)
+            { category: "Desserts", prompt: "Name cake types" },
+            { category: "Desserts", prompt: "Name ice cream flavors" },
+            { category: "Desserts", prompt: "Name chocolate brands" },
+            { category: "Desserts", prompt: "Name pastry types" },
+            { category: "Desserts", prompt: "Name candy varieties" },
+
+            // Vehicles & Transport Category
+            { category: "Vehicles", prompt: "Name truck models" },
+            { category: "Vehicles", prompt: "Name bike brands" },
+            { category: "Vehicles", prompt: "Name public transport" },
+            { category: "Vehicles", prompt: "Name luxury cars" },
+
+            // Miscellaneous Inspired Prompts
+            { category: "Misc", prompt: "Name superheroes" },
+            { category: "Misc", prompt: "Name board games" },
+            { category: "Misc", prompt: "Name weather phenomena" },
+            { category: "Misc", prompt: "Name space missions" },
+            { category: "Misc", prompt: "Name ocean creatures" },
+            { category: "Misc", prompt: "Name plant types" },
+            { category: "Misc", prompt: "Name holiday destinations" },
+            { category: "Misc", prompt: "Name book genres" },
+            { category: "Misc", prompt: "Name dance moves" },
+            { category: "Misc", prompt: "Name cocktail ingredients" },
+            { category: "Misc", prompt: "Name fitness exercises" },
+            { category: "Misc", prompt: "Name art supplies" },
+            { category: "Misc", prompt: "Name travel apps" },
+            { category: "Misc", prompt: "Name coffee chains" },
+            { category: "Misc", prompt: "Name wine varieties" },
+            { category: "Misc", prompt: "Name board sports" },
+            { category: "Misc", prompt: "Name puzzle types" },
+            { category: "Misc", prompt: "Name meditation techniques" },
+            { category: "Misc", prompt: "Name photography styles" },
+            { category: "Misc", prompt: "Name gardening tools" },
+            { category: "Misc", prompt: "Name cocktail garnishes" },
+            { category: "Misc", prompt: "Name hiking trails" }
         ];
         
         function generateNewPrompt() {
@@ -449,12 +593,23 @@
             
             gameActive = true;
             
+            // Create and resume audio context on user interaction
+            audioContext = createAudioContext();
+            if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume().then(() => {
+                    console.log('AudioContext resumed');
+                }).catch(err => {
+                    console.error('Failed to resume AudioContext:', err);
+                });
+            }
+            
             // Random explosion time between 25 seconds (25000ms) and 90 seconds (90000ms)
             explosionTime = Math.random() * (90000 - 25000) + 25000;
             startTime = Date.now();
             
             document.getElementById('gameArea').style.display = 'block';
             document.getElementById('startBtn').disabled = true;
+            document.getElementById('timerDisplay').style.display = 'block';
             
             updateCurrentPlayer();
             startBombTimer();
@@ -478,18 +633,14 @@
             spark.style.display = 'block';
             
             // Start continuous ticking sound - store interval globally so we can clear it
+            let tickInterval = 1000;
             window.tickInterval = setInterval(() => {
-                if (gameActive) {
-                    try {
-                        const audioContext = createAudioContext();
-                        createTickingSound(audioContext);
-                    } catch (e) {
-                        // Audio not supported, continue silently
-                    }
-                } else {
+                if (gameActive && audioContext) {
+                    createTickingSound(audioContext);
+                } else if (!gameActive) {
                     clearInterval(window.tickInterval);
                 }
-            }, 1000);
+            }, tickInterval);
             
             bombTimer = setInterval(() => {
                 const elapsed = Date.now() - startTime;
@@ -506,30 +657,28 @@
                     bomb.style.animationDuration = '0.2s';
                     // Speed up ticking for last 10 seconds
                     clearInterval(window.tickInterval);
+                    tickInterval = 300;
                     window.tickInterval = setInterval(() => {
-                        if (gameActive) {
-                            try {
-                                const audioContext = createAudioContext();
-                                createTickingSound(audioContext);
-                            } catch (e) {}
-                        } else {
+                        if (gameActive && audioContext) {
+                            createTickingSound(audioContext);
+                        } else if (!gameActive) {
                             clearInterval(window.tickInterval);
                         }
-                    }, 300);
+                    }, tickInterval);
                 } else if (remaining < 30000) { // Last 30 seconds
                     bomb.style.animationDuration = '0.3s';
                     // Speed up ticking for last 30 seconds
-                    clearInterval(window.tickInterval);
-                    window.tickInterval = setInterval(() => {
-                        if (gameActive) {
-                            try {
-                                const audioContext = createAudioContext();
+                    if (tickInterval !== 500) {
+                        clearInterval(window.tickInterval);
+                        tickInterval = 500;
+                        window.tickInterval = setInterval(() => {
+                            if (gameActive && audioContext) {
                                 createTickingSound(audioContext);
-                            } catch (e) {}
-                        } else {
-                            clearInterval(window.tickInterval);
-                        }
-                    }, 500);
+                            } else if (!gameActive) {
+                                clearInterval(window.tickInterval);
+                            }
+                        }, tickInterval);
+                    }
                 }
                 
                 if (remaining <= 0) {
@@ -557,12 +706,9 @@
             bomb.classList.add('exploding');
             spark.style.display = 'none';
             
-            // Play explosion sound
-            try {
-                const audioContext = createAudioContext();
+            // Play explosion sound using the shared context
+            if (audioContext) {
                 createExplosionSound(audioContext);
-            } catch (e) {
-                // Audio not supported, continue silently
             }
             
             // Show game over screen
@@ -588,6 +734,7 @@
             
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('startBtn').disabled = false;
+            document.getElementById('timerDisplay').style.display = 'none';
             document.getElementById('timerDisplay').textContent = '--:--';
         }
         
@@ -597,6 +744,12 @@
             
             // Hide game over screen if showing
             document.getElementById('gameOver').style.display = 'none';
+            
+            // Close audio context
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
             
             // Generate a new prompt for next game
             generateNewPrompt();
@@ -619,7 +772,14 @@
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('gameOver').style.display = 'none';
             document.getElementById('startBtn').disabled = false;
+            document.getElementById('timerDisplay').style.display = 'none';
             document.getElementById('timerDisplay').textContent = '--:--';
+            
+            // Close audio context
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
         }
         
         // Auto-generate first prompt on page load
