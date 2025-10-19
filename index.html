@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pass the Shot - Online Game</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .game-container {
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+            padding: 2rem;
+        }
+        
+        .title {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px #ff6b6b;
+            color: #ff6b6b;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+        
+        .bomb-container {
+            position: relative;
+            margin: 2rem auto;
+            width: 200px;
+            height: 200px;
+        }
+        
+        .bomb {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            transition: transform 0.1s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .bomb.ticking {
+            animation: shotGlassPulse 0.5s infinite alternate;
+        }
+        
+        .bomb.exploding {
+            animation: explode 0.5s ease-out;
+        }
+        
+        @keyframes shotGlassPulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.5)); }
+            100% { transform: scale(1.1); filter: drop-shadow(0 0 40px rgba(255, 107, 107, 0.8)); }
+        }
+        
+        @keyframes explode {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.5); filter: drop-shadow(0 0 60px #ffff00); }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        
+        .fuse {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 30px;
+            background: #8B4513;
+            border-radius: 2px;
+        }
+        
+        .spark {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ff6b6b;
+            animation: sparkle 0.3s infinite alternate;
+        }
+        
+        @keyframes sparkle {
+            0% { opacity: 1; transform: translateX(-50%) scale(1); }
+            100% { opacity: 0.5; transform: translateX(-50%) scale(1.2); }
+        }
+        
+        .timer-display {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            color: #ff6b6b;
+            text-shadow: 0 0 10px #ff6b6b;
+        }
+        
+        .current-player {
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 2px solid #ff6b6b;
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #ff5252);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        button:hover {
+            background: linear-gradient(45deg, #ff5252, #ff4444);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .game-over-content {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 15px;
+            border: 3px solid #ff6b6b;
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
+        }
+        
+        .explosion-text {
+            font-size: 4rem;
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            animation: shake 0.5s infinite;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .title { font-size: 2rem; }
+            .bomb-container { width: 150px; height: 150px; }
+            .bomb { width: 150px; height: 150px; }
+            .input-group { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="title">🥃 PASS THE SHOT 🥂</h1>
+        <p class="subtitle">Quick! Say an answer and pass the shot before the timer runs out!</p>
+        
+        <div class="controls">
+            <div class="input-group">
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
+                    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; justify-content: center;">
+                        <span style="font-weight: bold; color: #ff6b6b;">Current Prompt:</span>
+                        <span id="currentPrompt" style="font-size: 1.1rem; background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 5px;">Click "New Prompt" to generate</span>
+                    </div>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
+                        <button onclick="generateNewPrompt()" id="newPromptBtn">🎲 New Prompt</button>
+                        <button onclick="startGame()" id="startBtn">Start Game</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Advertising Section -->
+        <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(255, 107, 107, 0.3); margin: 2rem 0;">
+            <h3 style="color: #ff6b6b; margin-bottom: 0.5rem; font-size: 1.2rem;">🚀 Advertise Here</h3>
+            <p style="margin-bottom: 0.5rem; opacity: 0.9;">Get your brand or business prompts added to our game!</p>
+            <a href="https://www.anythinglikewhat.com/#contactus" target="_blank" rel="noopener noreferrer" 
+               style="color: #ff6b6b; text-decoration: underline; font-weight: 600;">
+                Learn More →
+            </a>
+        </div>
+        
+        <div class="instructions">
+            <strong>How to Play:</strong> Start the game and take turns saying answers out loud to pass the shot. 
+            The timer will run out randomly between 25 seconds and 90 seconds. Don't be holding it when time's up!
+        </div>
+        
+        <div id="gameArea" style="display: none;">
+            <div class="current-player" id="currentPlayer">
+                Say your answer out loud and click the shot to pass it!
+            </div>
+            
+            <div class="bomb-container">
+                <div class="bomb" id="bomb" onclick="passBomb()">
+                    <!-- Drink Emojis -->
+                    <div style="font-size: 6rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
+                        🥃🥂
+                    </div>
+                    
+                    <!-- Sparkle effects -->
+                    <div class="spark" id="spark" style="display: none; position: absolute; top: 15%; left: 50%; transform: translateX(-50%); width: 15px; height: 15px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 20px #FFD700; animation: sparkle 0.3s infinite alternate; z-index: 4;"></div>
+                </div>
+            </div>
+            
+            <div class="timer-display" id="timerDisplay" style="display: none;">--:--</div>
+            
+
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap;">
+                <button onclick="stopGame()" style="background: linear-gradient(45deg, #ff9800, #f57c00);">Stop Game</button>
+                <button onclick="goHome()" style="background: linear-gradient(45deg, #2196f3, #1976d2);">🏠 Home</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="game-over" id="gameOver">
+        <div class="game-over-content">
+            <div class="explosion-text">🥃 SHOT! 🥂</div>
+            <h2 id="loserText">Someone is getting a shot!</h2>
+            <p>Time ran out!</p>
+            <button onclick="resetGame()" style="margin-top: 1rem;">Play Again</button>
+        </div>
+    </div>
+    
+    <!-- Footer Section -->
+    <footer style="margin-top: 3rem; padding: 2rem 1rem; border-top: 1px solid rgba(255, 107, 107, 0.3); text-align: center; max-width: 800px; width: 90%;">
+        <div style="display: flex; flex-direction: column; gap: 1.5rem; align-items: center;">
+            <!-- Contact Us -->
+            <div>
+                <a href="https://www.anythinglikewhat.com/#contactus" target="_blank" rel="noopener noreferrer" 
+                   style="color: #ff6b6b; text-decoration: none; font-weight: 700; font-size: 1.1rem; transition: all 0.3s ease;">
+                    📧 Contact Us
+                </a>
+            </div>
+            
+
+            
+            <!-- Copyright -->
+            <div style="opacity: 0.7; font-size: 0.9rem; margin-top: 1rem;">
+                © Topline Growth Catalyst · All rights reserved
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let gameActive = false;
+        let bombTimer = null;
+        let explosionTime = 0;
+        let startTime = 0;
+        let gamePrompt = '';
+        let currentCategory = '';
+        
+        // Create audio context and sounds
+        function createAudioContext() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            return audioContext;
+        }
+        
+        function createTickingSound(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.type = 'square';
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
+            gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+        
+        function createExplosionSound(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            oscillator.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(200, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.5);
+            oscillator.type = 'sawtooth';
+            
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(2000, audioContext.currentTime);
+            filter.frequency.exponentialRampToValueAtTime(100, audioContext.currentTime + 0.5);
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+        
+        // Prompt database (simulating Excel file data)
+        const promptDatabase = [
+            // Music Category
+            { category: "Music", prompt: "Name Amapiano artists" },
+            { category: "Music", prompt: "Name South African musicians" },
+            { category: "Music", prompt: "Name music genres" },
+            { category: "Music", prompt: "Name musical instruments" },
+            { category: "Music", prompt: "Name famous songs" },
+            { category: "Music", prompt: "Name record labels" },
+            { category: "Music", prompt: "Name music streaming platforms" },
+            { category: "Music", prompt: "Name music awards" },
+            
+            // Food Category
+            { category: "Food", prompt: "Name types of chip flavours" },
+            { category: "Food", prompt: "Name South African dishes" },
+            { category: "Food", prompt: "Name pizza toppings" },
+            { category: "Food", prompt: "Name breakfast foods" },
+            { category: "Food", prompt: "Name desserts" },
+            { category: "Food", prompt: "Name spices" },
+            { category: "Food", prompt: "Name fruits" },
+            { category: "Food", prompt: "Name cooking methods" },
+            { category: "Food", prompt: "Name fast food chains" },
+            
+            // Beverages Category
+            { category: "Beverages", prompt: "Name beer brands" },
+            { category: "Beverages", prompt: "Name soft drink brands" },
+            { category: "Beverages", prompt: "Name coffee types" },
+            { category: "Beverages", prompt: "Name cocktails" },
+            { category: "Beverages", prompt: "Name energy drinks" },
+            { category: "Beverages", prompt: "Name juice flavours" },
+            { category: "Beverages", prompt: "Name tea varieties" },
+            { category: "Beverages", prompt: "Name alcoholic drinks" },
+            
+            // Sports Category
+            { category: "Sports", prompt: "Name football teams" },
+            { category: "Sports", prompt: "Name Olympic sports" },
+            { category: "Sports", prompt: "Name cricket positions" },
+            { category: "Sports", prompt: "Name rugby teams" },
+            { category: "Sports", prompt: "Name sports equipment" },
+            { category: "Sports", prompt: "Name famous athletes" },
+            
+            // Entertainment Category
+            { category: "Entertainment", prompt: "Name TV shows" },
+            { category: "Entertainment", prompt: "Name movie genres" },
+            { category: "Entertainment", prompt: "Name Netflix series" },
+            { category: "Entertainment", prompt: "Name Disney characters" },
+            { category: "Entertainment", prompt: "Name superhero movies" },
+            { category: "Entertainment", prompt: "Name reality TV shows" },
+            
+            // General Knowledge Category
+            { category: "General", prompt: "Name African countries" },
+            { category: "General", prompt: "Name world capitals" },
+            { category: "General", prompt: "Name animals" },
+            { category: "General", prompt: "Name colors" },
+            { category: "General", prompt: "Name professions" },
+            { category: "General", prompt: "Name car brands" },
+            { category: "General", prompt: "Name clothing items" },
+            { category: "General", prompt: "Name school subjects" }
+        ];
+        
+        function generateNewPrompt() {
+            const randomIndex = Math.floor(Math.random() * promptDatabase.length);
+            const selectedPrompt = promptDatabase[randomIndex];
+            
+            gamePrompt = selectedPrompt.prompt;
+            currentCategory = selectedPrompt.category;
+            
+            document.getElementById('currentPrompt').innerHTML = `
+                <strong style="color: #ff6b6b;">[${currentCategory}]</strong> ${gamePrompt}
+            `;
+        }
+        
+        function startGame() {
+            if (!gamePrompt) {
+                alert('Please generate a prompt first by clicking "New Prompt"!');
+                return;
+            }
+            
+            gameActive = true;
+            
+            // Random explosion time between 25 seconds (25000ms) and 90 seconds (90000ms)
+            explosionTime = Math.random() * (90000 - 25000) + 25000;
+            startTime = Date.now();
+            
+            document.getElementById('gameArea').style.display = 'block';
+            document.getElementById('startBtn').disabled = true;
+            
+            updateCurrentPlayer();
+            startBombTimer();
+        }
+        
+        function updateCurrentPlayer() {
+            const currentPlayerDiv = document.getElementById('currentPlayer');
+            currentPlayerDiv.innerHTML = `
+                <strong>Say your answer out loud and click the shot to pass it!</strong><br>
+                <span style="font-size: 1rem; opacity: 0.8; color: #ff6b6b;">[${currentCategory}]</span>
+                <span style="font-size: 1rem; opacity: 0.8;"> ${gamePrompt}</span>
+            `;
+        }
+        
+        function startBombTimer() {
+            const bomb = document.getElementById('bomb');
+            const spark = document.getElementById('spark');
+            const timerDisplay = document.getElementById('timerDisplay');
+            
+            bomb.classList.add('ticking');
+            spark.style.display = 'block';
+            
+            // Start continuous ticking sound - store interval globally so we can clear it
+            window.tickInterval = setInterval(() => {
+                if (gameActive) {
+                    try {
+                        const audioContext = createAudioContext();
+                        createTickingSound(audioContext);
+                    } catch (e) {
+                        // Audio not supported, continue silently
+                    }
+                } else {
+                    clearInterval(window.tickInterval);
+                }
+            }, 1000);
+            
+            bombTimer = setInterval(() => {
+                const elapsed = Date.now() - startTime;
+                const remaining = Math.max(0, explosionTime - elapsed);
+                
+                // Update timer display
+                const seconds = Math.ceil(remaining / 1000);
+                const minutes = Math.floor(seconds / 60);
+                const displaySeconds = seconds % 60;
+                timerDisplay.textContent = `${minutes}:${displaySeconds.toString().padStart(2, '0')}`;
+                
+                // Speed up animation and ticking as time runs out
+                if (remaining < 10000) { // Last 10 seconds
+                    bomb.style.animationDuration = '0.2s';
+                    // Speed up ticking for last 10 seconds
+                    clearInterval(window.tickInterval);
+                    window.tickInterval = setInterval(() => {
+                        if (gameActive) {
+                            try {
+                                const audioContext = createAudioContext();
+                                createTickingSound(audioContext);
+                            } catch (e) {}
+                        } else {
+                            clearInterval(window.tickInterval);
+                        }
+                    }, 300);
+                } else if (remaining < 30000) { // Last 30 seconds
+                    bomb.style.animationDuration = '0.3s';
+                    // Speed up ticking for last 30 seconds
+                    clearInterval(window.tickInterval);
+                    window.tickInterval = setInterval(() => {
+                        if (gameActive) {
+                            try {
+                                const audioContext = createAudioContext();
+                                createTickingSound(audioContext);
+                            } catch (e) {}
+                        } else {
+                            clearInterval(window.tickInterval);
+                        }
+                    }, 500);
+                }
+                
+                if (remaining <= 0) {
+                    clearInterval(window.tickInterval);
+                    explodeBomb();
+                }
+            }, 100);
+        }
+        
+        function passBomb() {
+            if (!gameActive) return;
+            
+            // Just continue the game - no player tracking needed
+            // The bomb continues ticking until it explodes
+        }
+        
+        function explodeBomb() {
+            gameActive = false;
+            clearInterval(bombTimer);
+            
+            const bomb = document.getElementById('bomb');
+            const spark = document.getElementById('spark');
+            
+            bomb.classList.remove('ticking');
+            bomb.classList.add('exploding');
+            spark.style.display = 'none';
+            
+            // Play explosion sound
+            try {
+                const audioContext = createAudioContext();
+                createExplosionSound(audioContext);
+            } catch (e) {
+                // Audio not supported, continue silently
+            }
+            
+            // Show game over screen
+            setTimeout(() => {
+                document.getElementById('loserText').textContent = `Someone is getting a shot!`;
+                document.getElementById('gameOver').style.display = 'flex';
+            }, 500);
+        }
+        
+        function stopGame() {
+            gameActive = false;
+            clearInterval(bombTimer);
+            if (window.tickInterval) {
+                clearInterval(window.tickInterval);
+            }
+            
+            const bomb = document.getElementById('bomb');
+            const spark = document.getElementById('spark');
+            
+            bomb.classList.remove('ticking', 'exploding');
+            bomb.style.animationDuration = '0.5s';
+            spark.style.display = 'none';
+            
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('timerDisplay').textContent = '--:--';
+        }
+        
+        function goHome() {
+            // Stop any active game first
+            stopGame();
+            
+            // Hide game over screen if showing
+            document.getElementById('gameOver').style.display = 'none';
+            
+            // Generate a new prompt for next game
+            generateNewPrompt();
+        }
+        
+        function resetGame() {
+            gameActive = false;
+            clearInterval(bombTimer);
+            if (window.tickInterval) {
+                clearInterval(window.tickInterval);
+            }
+            
+            const bomb = document.getElementById('bomb');
+            const spark = document.getElementById('spark');
+            
+            bomb.classList.remove('ticking', 'exploding');
+            bomb.style.animationDuration = '0.5s';
+            spark.style.display = 'none';
+            
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'none';
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('timerDisplay').textContent = '--:--';
+        }
+        
+        // Auto-generate first prompt on page load
+        window.addEventListener('load', function() {
+            generateNewPrompt();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'991074c0c7364ed4',t:'MTc2MDg3ODgwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
