@@ -264,7 +264,6 @@
             
             <div class="timer-display" id="timerDisplay" style="display: none;">--:--</div>
             
-
             
             <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap;">
                 <button onclick="stopGame()" style="background: linear-gradient(45deg, #ff9800, #f57c00);">Stop Game</button>
@@ -302,7 +301,6 @@
                     📧 Contact Us
                 </a>
             </div>
-            
             
             
             <!-- Copyright -->
@@ -609,7 +607,6 @@
             
             document.getElementById('gameArea').style.display = 'block';
             document.getElementById('startBtn').disabled = true;
-            document.getElementById('timerDisplay').style.display = 'block';
             
             updateCurrentPlayer();
             startBombTimer();
@@ -646,7 +643,7 @@
                 const elapsed = Date.now() - startTime;
                 const remaining = Math.max(0, explosionTime - elapsed);
                 
-                // Update timer display
+                // Update timer display (hidden)
                 const seconds = Math.ceil(remaining / 1000);
                 const minutes = Math.floor(seconds / 60);
                 const displaySeconds = seconds % 60;
@@ -698,6 +695,9 @@
         function explodeBomb() {
             gameActive = false;
             clearInterval(bombTimer);
+            if (window.tickInterval) {
+                clearInterval(window.tickInterval);
+            }
             
             const bomb = document.getElementById('bomb');
             const spark = document.getElementById('spark');
@@ -721,9 +721,6 @@
         function stopGame() {
             gameActive = false;
             clearInterval(bombTimer);
-            if (window.tickInterval) {
-                clearInterval(window.tickInterval);
-            }
             
             const bomb = document.getElementById('bomb');
             const spark = document.getElementById('spark');
@@ -734,7 +731,6 @@
             
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('startBtn').disabled = false;
-            document.getElementById('timerDisplay').style.display = 'none';
             document.getElementById('timerDisplay').textContent = '--:--';
         }
         
@@ -772,7 +768,6 @@
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('gameOver').style.display = 'none';
             document.getElementById('startBtn').disabled = false;
-            document.getElementById('timerDisplay').style.display = 'none';
             document.getElementById('timerDisplay').textContent = '--:--';
             
             // Close audio context
