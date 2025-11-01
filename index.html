@@ -6,13 +6,13 @@
     <title>Pass the Shot - Online Game</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-        
+       
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+       
         body {
             font-family: 'Orbitron', monospace;
             background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
@@ -24,14 +24,14 @@
             color: white;
             overflow-x: hidden;
         }
-        
+       
         .game-container {
             text-align: center;
             max-width: 800px;
             width: 90%;
             padding: 2rem;
         }
-        
+       
         .title {
             font-size: 3rem;
             font-weight: 900;
@@ -39,20 +39,20 @@
             text-shadow: 0 0 20px #ff6b6b;
             color: #ff6b6b;
         }
-        
+       
         .subtitle {
             font-size: 1.2rem;
             margin-bottom: 2rem;
             opacity: 0.8;
         }
-        
+       
         .bomb-container {
             position: relative;
             margin: 2rem auto;
             width: 200px;
             height: 200px;
         }
-        
+       
         .bomb {
             width: 200px;
             height: 200px;
@@ -63,26 +63,26 @@
             align-items: center;
             justify-content: center;
         }
-        
+       
         .bomb.ticking {
             animation: shotGlassPulse 0.5s infinite alternate;
         }
-        
+       
         .bomb.exploding {
             animation: explode 0.5s ease-out;
         }
-        
+       
         @keyframes shotGlassPulse {
             0% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.5)); }
             100% { transform: scale(1.1); filter: drop-shadow(0 0 40px rgba(255, 107, 107, 0.8)); }
         }
-        
+       
         @keyframes explode {
             0% { transform: scale(1); }
             50% { transform: scale(1.5); filter: drop-shadow(0 0 60px #ffff00); }
             100% { transform: scale(2); opacity: 0; }
         }
-        
+       
         .fuse {
             position: absolute;
             top: -20px;
@@ -93,7 +93,7 @@
             background: #8B4513;
             border-radius: 2px;
         }
-        
+       
         .spark {
             position: absolute;
             top: -25px;
@@ -106,12 +106,12 @@
             box-shadow: 0 0 10px #ff6b6b;
             animation: sparkle 0.3s infinite alternate;
         }
-        
+       
         @keyframes sparkle {
             0% { opacity: 1; transform: translateX(-50%) scale(1); }
             100% { opacity: 0.5; transform: translateX(-50%) scale(1.2); }
         }
-        
+       
         .timer-display {
             font-size: 2rem;
             font-weight: 700;
@@ -119,7 +119,7 @@
             color: #ff6b6b;
             text-shadow: 0 0 10px #ff6b6b;
         }
-        
+       
         .current-player {
             font-size: 1.5rem;
             margin: 1rem 0;
@@ -128,21 +128,21 @@
             border-radius: 10px;
             border: 2px solid #ff6b6b;
         }
-        
+       
         .controls {
             display: flex;
             flex-direction: column;
             gap: 1rem;
             margin: 2rem 0;
         }
-        
+       
         .input-group {
             display: flex;
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
         }
-        
+       
         button {
             padding: 0.8rem 1.5rem;
             background: linear-gradient(45deg, #ff6b6b, #ff5252);
@@ -155,19 +155,19 @@
             transition: all 0.3s ease;
             font-size: 1rem;
         }
-        
+       
         button:hover {
             background: linear-gradient(45deg, #ff5252, #ff4444);
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
         }
-        
+       
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
         }
-        
+       
         .game-over {
             position: fixed;
             top: 0;
@@ -180,7 +180,7 @@
             justify-content: center;
             z-index: 1000;
         }
-        
+       
         .game-over-content {
             text-align: center;
             padding: 2rem;
@@ -189,20 +189,20 @@
             border: 3px solid #ff6b6b;
             box-shadow: 0 0 30px rgba(255, 107, 107, 0.5);
         }
-        
+       
         .explosion-text {
             font-size: 4rem;
             color: #ff6b6b;
             margin-bottom: 1rem;
             animation: shake 0.5s infinite;
         }
-        
+       
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
         }
-        
+       
         .instructions {
             background: rgba(255, 255, 255, 0.1);
             padding: 1rem;
@@ -211,7 +211,7 @@
             font-size: 0.9rem;
             line-height: 1.5;
         }
-        
+       
         @media (max-width: 768px) {
             .title { font-size: 2rem; }
             .bomb-container { width: 150px; height: 150px; }
@@ -224,7 +224,7 @@
     <div class="game-container">
         <h1 class="title">🥃 PASS THE SHOT 🥂</h1>
         <p class="subtitle">Quick! Say an answer and pass the shot before the timer runs out!</p>
-        
+       
         <div class="controls">
             <div class="input-group">
                 <div style="display: flex; flex-direction: column; gap: 0.5rem; align-items: center;">
@@ -239,39 +239,39 @@
                 </div>
             </div>
         </div>
-        
+       
         <div class="instructions">
-            <strong>How to Play:</strong> Start the game and take turns saying answers out loud to pass the shot. 
+            <strong>How to Play:</strong> Start the game and take turns saying answers out loud to pass the shot.
             The timer will run out randomly between 25 seconds and 90 seconds. Don't be holding it when time's up!
         </div>
-        
+       
         <div id="gameArea" style="display: none;">
             <div class="current-player" id="currentPlayer">
                 Say your answer out loud and click the shot to pass it!
             </div>
-            
+           
             <div class="bomb-container">
                 <div class="bomb" id="bomb" onclick="passBomb()">
                     <!-- Drink Emojis -->
                     <div style="font-size: 6rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
                         🥃🥂
                     </div>
-                    
+                   
                     <!-- Sparkle effects -->
                     <div class="spark" id="spark" style="display: none; position: absolute; top: 15%; left: 50%; transform: translateX(-50%); width: 15px; height: 15px; background: #FFD700; border-radius: 50%; box-shadow: 0 0 20px #FFD700; animation: sparkle 0.3s infinite alternate; z-index: 4;"></div>
                 </div>
             </div>
-            
+           
             <div class="timer-display" id="timerDisplay" style="display: none;">--:--</div>
-            
-            
+           
+           
             <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap;">
                 <button onclick="stopGame()" style="background: linear-gradient(45deg, #ff9800, #f57c00);">Stop Game</button>
                 <button onclick="goHome()" style="background: linear-gradient(45deg, #2196f3, #1976d2);">🏠 Home</button>
             </div>
         </div>
     </div>
-    
+   
     <div class="game-over" id="gameOver">
         <div class="game-over-content">
             <div class="explosion-text">🥃 SHOT! 🥂</div>
@@ -280,7 +280,7 @@
             <button onclick="resetGame()" style="margin-top: 1rem;">Play Again</button>
         </div>
     </div>
-    
+   
     <!-- Footer Section -->
     <footer style="margin-top: 3rem; padding: 2rem 1rem; border-top: 1px solid rgba(255, 107, 107, 0.3); text-align: center; max-width: 800px; width: 90%;">
         <div style="display: flex; flex-direction: column; gap: 1.5rem; align-items: center;">
@@ -288,28 +288,27 @@
             <div style="background: rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(255, 107, 107, 0.3); margin: 2rem 0; max-width: 100%;">
                 <h3 style="color: #ff6b6b; margin-bottom: 0.5rem; font-size: 1.2rem;">🚀 Advertise Here</h3>
                 <p style="margin-bottom: 0.5rem; opacity: 0.9;">Get your brand or business prompts added to our game!</p>
-                <a href="https://www.anythinglikewhat.com/#contactus" target="_blank" rel="noopener noreferrer" 
+                <a href="https://www.anythinglikewhat.com/#contactus" target="_blank" rel="noopener noreferrer"
                    style="color: #ff6b6b; text-decoration: underline; font-weight: 600;">
                     Learn More →
                 </a>
             </div>
-            
+           
             <!-- Contact Us -->
             <div>
-                <a href="https://www.anythinglikewhat.com/#contactus" target="_blank" rel="noopener noreferrer" 
+                <a href="https://www.anythinglikewhat.com/#contactus" target="_blank" rel="noopener noreferrer"
                    style="color: #ff6b6b; text-decoration: none; font-weight: 700; font-size: 1.1rem; transition: all 0.3s ease;">
                     📧 Contact Us
                 </a>
             </div>
-            
-            
+           
+           
             <!-- Copyright -->
             <div style="opacity: 0.7; font-size: 0.9rem; margin-top: 1rem;">
                 © Topline Growth Catalyst · All rights reserved
             </div>
         </div>
     </footer>
-
     <script>
         let gameActive = false;
         let bombTimer = null;
@@ -318,61 +317,61 @@
         let gamePrompt = '';
         let currentCategory = '';
         let audioContext = null;
-        
+       
         // Create audio context and sounds
         function createAudioContext() {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (!AudioContext) return null;
             return new AudioContext();
         }
-        
+       
         function createTickingSound(context) {
             if (!context || context.state === 'closed') return;
-            
+           
             const oscillator = context.createOscillator();
             const gainNode = context.createGain();
-            
+           
             oscillator.connect(gainNode);
             gainNode.connect(context.destination);
-            
+           
             oscillator.frequency.setValueAtTime(800, context.currentTime);
             oscillator.type = 'square';
-            
+           
             gainNode.gain.setValueAtTime(0, context.currentTime);
             gainNode.gain.linearRampToValueAtTime(0.1, context.currentTime + 0.01);
             gainNode.gain.linearRampToValueAtTime(0, context.currentTime + 0.1);
-            
+           
             oscillator.start(context.currentTime);
             oscillator.stop(context.currentTime + 0.1);
         }
-        
+       
         function createExplosionSound(context) {
             if (!context || context.state === 'closed') return;
-            
+           
             const oscillator = context.createOscillator();
             const gainNode = context.createGain();
             const filter = context.createBiquadFilter();
-            
+           
             oscillator.connect(filter);
             filter.connect(gainNode);
             gainNode.connect(context.destination);
-            
+           
             oscillator.frequency.setValueAtTime(200, context.currentTime);
             oscillator.frequency.exponentialRampToValueAtTime(50, context.currentTime + 0.5);
             oscillator.type = 'sawtooth';
-            
+           
             filter.type = 'lowpass';
             filter.frequency.setValueAtTime(2000, context.currentTime);
             filter.frequency.exponentialRampToValueAtTime(100, context.currentTime + 0.5);
-            
+           
             gainNode.gain.setValueAtTime(0, context.currentTime);
             gainNode.gain.linearRampToValueAtTime(0.3, context.currentTime + 0.01);
             gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
-            
+           
             oscillator.start(context.currentTime);
             oscillator.stop(context.currentTime + 0.5);
         }
-        
+       
         // Prompt database (simulating Excel file data)
         const promptDatabase = [
             // Music Category
@@ -384,7 +383,7 @@
             { category: "Music", prompt: "Name record labels" },
             { category: "Music", prompt: "Name music streaming platforms" },
             { category: "Music", prompt: "Name music awards" },
-            
+           
             // Food Category
             { category: "Food", prompt: "Name types of chip flavours" },
             { category: "Food", prompt: "Name South African dishes" },
@@ -395,7 +394,7 @@
             { category: "Food", prompt: "Name fruits" },
             { category: "Food", prompt: "Name cooking methods" },
             { category: "Food", prompt: "Name fast food chains" },
-            
+           
             // Beverages Category
             { category: "Beverages", prompt: "Name beer brands" },
             { category: "Beverages", prompt: "Name soft drink brands" },
@@ -405,7 +404,7 @@
             { category: "Beverages", prompt: "Name juice flavours" },
             { category: "Beverages", prompt: "Name tea varieties" },
             { category: "Beverages", prompt: "Name alcoholic drinks" },
-            
+           
             // Sports Category
             { category: "Sports", prompt: "Name football teams" },
             { category: "Sports", prompt: "Name Olympic sports" },
@@ -413,7 +412,7 @@
             { category: "Sports", prompt: "Name rugby teams" },
             { category: "Sports", prompt: "Name sports equipment" },
             { category: "Sports", prompt: "Name famous athletes" },
-            
+           
             // Entertainment Category
             { category: "Entertainment", prompt: "Name TV shows" },
             { category: "Entertainment", prompt: "Name movie genres" },
@@ -421,7 +420,7 @@
             { category: "Entertainment", prompt: "Name Disney characters" },
             { category: "Entertainment", prompt: "Name superhero movies" },
             { category: "Entertainment", prompt: "Name reality TV shows" },
-            
+           
             // General Knowledge Category
             { category: "General", prompt: "Name African countries" },
             { category: "General", prompt: "Name world capitals" },
@@ -431,7 +430,6 @@
             { category: "General", prompt: "Name car brands" },
             { category: "General", prompt: "Name clothing items" },
             { category: "General", prompt: "Name school subjects" },
-
             // New Prompts: Celebrities Category (Inspired by actors, musicians, hosts)
             { category: "Celebrities", prompt: "Name Hollywood actors" },
             { category: "Celebrities", prompt: "Name famous rappers" },
@@ -445,7 +443,6 @@
             { category: "Celebrities", prompt: "Name hip-hop artists" },
             { category: "Celebrities", prompt: "Name film directors" },
             { category: "Celebrities", prompt: "Name reality stars" },
-
             // Landmarks Category
             { category: "Landmarks", prompt: "Name world landmarks" },
             { category: "Landmarks", prompt: "Name African landmarks" },
@@ -455,7 +452,6 @@
             { category: "Landmarks", prompt: "Name bridges" },
             { category: "Landmarks", prompt: "Name deserts" },
             { category: "Landmarks", prompt: "Name waterfalls" },
-
             // South African Places Category
             { category: "South Africa", prompt: "Name South African cities" },
             { category: "South Africa", prompt: "Name SA landmarks" },
@@ -467,7 +463,6 @@
             { category: "South Africa", prompt: "Name SA events" },
             { category: "South Africa", prompt: "Name SA festivals" },
             { category: "South Africa", prompt: "Name SA mountains" },
-
             // Brands Category (Cars, Tech, Food, etc.)
             { category: "Brands", prompt: "Name car models" },
             { category: "Brands", prompt: "Name smartphone brands" },
@@ -482,7 +477,6 @@
             { category: "Brands", prompt: "Name telecom providers" },
             { category: "Brands", prompt: "Name fashion labels" },
             { category: "Brands", prompt: "Name snack brands" },
-
             // TV Shows & Podcasts Category
             { category: "TV Podcasts", prompt: "Name popular podcasts" },
             { category: "TV Podcasts", prompt: "Name drama series" },
@@ -494,7 +488,6 @@
             { category: "TV Podcasts", prompt: "Name South African TV shows" },
             { category: "TV Podcasts", prompt: "Name international series" },
             { category: "TV Podcasts", prompt: "Name documentary series" },
-
             // Sports Teams & Athletes Category
             { category: "Sports Stars", prompt: "Name rugby players" },
             { category: "Sports Stars", prompt: "Name soccer clubs" },
@@ -506,7 +499,6 @@
             { category: "Sports Stars", prompt: "Name boxing champions" },
             { category: "Sports Stars", prompt: "Name golf courses" },
             { category: "Sports Stars", prompt: "Name SA sports teams" },
-
             // Culture & History Category
             { category: "Culture History", prompt: "Name historical figures" },
             { category: "Culture History", prompt: "Name cultural festivals" },
@@ -518,7 +510,6 @@
             { category: "Culture History", prompt: "Name art movements" },
             { category: "Culture History", prompt: "Name literary authors" },
             { category: "Culture History", prompt: "Name inventions" },
-
             // Modern Trends Category (Tech, Social Media, etc.)
             { category: "Trends", prompt: "Name social media platforms" },
             { category: "Trends", prompt: "Name AI tools" },
@@ -532,20 +523,17 @@
             { category: "Trends", prompt: "Name electric vehicles" },
             { category: "Trends", prompt: "Name remote work tools" },
             { category: "Trends", prompt: "Name sustainability brands" },
-
             // Desserts & Sweets Category (Expanding Food)
             { category: "Desserts", prompt: "Name cake types" },
             { category: "Desserts", prompt: "Name ice cream flavors" },
             { category: "Desserts", prompt: "Name chocolate brands" },
             { category: "Desserts", prompt: "Name pastry types" },
             { category: "Desserts", prompt: "Name candy varieties" },
-
             // Vehicles & Transport Category
             { category: "Vehicles", prompt: "Name truck models" },
             { category: "Vehicles", prompt: "Name bike brands" },
             { category: "Vehicles", prompt: "Name public transport" },
             { category: "Vehicles", prompt: "Name luxury cars" },
-
             // Miscellaneous Inspired Prompts
             { category: "Misc", prompt: "Name superheroes" },
             { category: "Misc", prompt: "Name board games" },
@@ -568,29 +556,156 @@
             { category: "Misc", prompt: "Name photography styles" },
             { category: "Misc", prompt: "Name gardening tools" },
             { category: "Misc", prompt: "Name cocktail garnishes" },
-            { category: "Misc", prompt: "Name hiking trails" }
+            { category: "Misc", prompt: "Name hiking trails" },
+            // New Word Structure Prompts
+            { category: "Word Structure", prompt: "Name words that end with \"ing\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"pre\"" },
+            { category: "Word Structure", prompt: "Name words that have \"ough\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ness\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"un\"" },
+            { category: "Word Structure", prompt: "Name words that have \"double letters\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ly\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"re\"" },
+            { category: "Word Structure", prompt: "Name words that have \"qu\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ment\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"con\"" },
+            { category: "Word Structure", prompt: "Name words that have \"ight\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ful\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"dis\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"less\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"over\"" },
+            { category: "Word Structure", prompt: "Name words that have \"ph\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"able\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"sub\"" },
+            { category: "Word Structure", prompt: "Name words that have \"ch\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ous\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"mis\"" },
+            { category: "Word Structure", prompt: "Name words that have \"ear\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ive\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"anti\"" },
+            { category: "Word Structure", prompt: "Name words that have \"oo\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"er\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"inter\"" },
+            { category: "Word Structure", prompt: "Name words that have \"gh\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"al\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"ex\"" },
+            { category: "Word Structure", prompt: "Name words that have \"silent letters\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ence\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"pro\"" },
+            { category: "Word Structure", prompt: "Name words that have \"ck\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ity\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"trans\"" },
+            { category: "Word Structure", prompt: "Name words that have \"wh\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ant\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"super\"" },
+            { category: "Word Structure", prompt: "Name words that have \"tch\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ure\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"auto\"" },
+            { category: "Word Structure", prompt: "Name words that have \"mb\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ic\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"de\"" },
+            { category: "Word Structure", prompt: "Name words that have \"dge\"" },
+            { category: "Word Structure", prompt: "Name words that end with \"ate\"" },
+            { category: "Word Structure", prompt: "Name words that start with \"be\"" },
+            // New Semantic Prompts
+            { category: "Semantics", prompt: "Name words related to weather" },
+            { category: "Semantics", prompt: "Name words related to emotions" },
+            { category: "Semantics", prompt: "Name words related to food" },
+            { category: "Semantics", prompt: "Name words related to travel" },
+            { category: "Semantics", prompt: "Name words related to technology" },
+            { category: "Semantics", prompt: "Name words related to nature" },
+            { category: "Semantics", prompt: "Name words related to music" },
+            { category: "Semantics", prompt: "Name words related to sports" },
+            { category: "Semantics", prompt: "Name words related to colors" },
+            { category: "Semantics", prompt: "Name words related to time" },
+            { category: "Semantics", prompt: "Name words related to groove" },
+            { category: "Semantics", prompt: "Name words related to water" },
+            { category: "Semantics", prompt: "Name words related to buildings" },
+            { category: "Semantics", prompt: "Name words related to clothing" },
+            { category: "Semantics", prompt: "Name words related to money" },
+            { category: "Semantics", prompt: "Name words related to family" },
+            { category: "Semantics", prompt: "Name words related to school" },
+            { category: "Semantics", prompt: "Name words related to amapiano" },
+            { category: "Semantics", prompt: "Name words related to braais" },
+            { category: "Semantics", prompt: "Name words related to alcohol" },
+            { category: "Semantics", prompt: "Name words related to health" },
+            { category: "Semantics", prompt: "Name words related to animals" },
+            { category: "Semantics", prompt: "Name words related to transportation" },
+            { category: "Semantics", prompt: "Name words related to art" },
+            { category: "Semantics", prompt: "Name words related to books" },
+            { category: "Semantics", prompt: "Name words related to celebrations" },
+            { category: "Semantics", prompt: "Name words related to gardening" },
+            { category: "Semantics", prompt: "Name words related to communication" },
+            { category: "Semantics", prompt: "Name words related to furniture" },
+            { category: "Semantics", prompt: "Name words related to occupations" },
+            { category: "Semantics", prompt: "Name words related to the body" },
+            { category: "Semantics", prompt: "Name words related to space" },
+            { category: "Semantics", prompt: "Name words related to holidays" },
+            { category: "Semantics", prompt: "Name words related to law" },
+            { category: "Semantics", prompt: "Name words related to history" },
+            { category: "Semantics", prompt: "Name words related to literature" },
+            { category: "Semantics", prompt: "Name words related to economy" },
+            { category: "Semantics", prompt: "Name words related to politics" },
+            { category: "Semantics", prompt: "Name words related to geography" },
+            { category: "Semantics", prompt: "Name words related to science" },
+            { category: "Semantics", prompt: "Name words related to religion" },
+            { category: "Semantics", prompt: "Name words related to entertainment" },
+            { category: "Semantics", prompt: "Name words related to shopping" },
+            // New Rhyming Prompts
+            { category: "Rhyming", prompt: "Name words that rhyme with \"cat\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"light\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"blue\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"tree\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"make\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"door\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"round\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"play\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"night\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"house\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"rain\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"book\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"sing\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"cold\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"fear\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"star\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"moon\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"gold\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"sun\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"fire\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"heart\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"sound\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"dream\"" },
+            { category: "Rhyming", prompt: "Name words that rhyme with \"fly\"" },
+            // New Letter Count Prompts
+            { category: "Letter Count", prompt: "Name five-letter words" },
+            { category: "Letter Count", prompt: "Name words with more than ten letters" },
+            { category: "Letter Count", prompt: "Name three-letter words" },
+            { category: "Letter Count", prompt: "Name four-letter words" },
+            { category: "Letter Count", prompt: "Name six-letter words" },
+            { category: "Letter Count", prompt: "Name seven-letter words" },
+            { category: "Letter Count", prompt: "Name two-letter words" }
         ];
-        
+       
         function generateNewPrompt() {
             const randomIndex = Math.floor(Math.random() * promptDatabase.length);
             const selectedPrompt = promptDatabase[randomIndex];
-            
+           
             gamePrompt = selectedPrompt.prompt;
             currentCategory = selectedPrompt.category;
-            
+           
             document.getElementById('currentPrompt').innerHTML = `
                 <strong style="color: #ff6b6b;">[${currentCategory}]</strong> ${gamePrompt}
             `;
         }
-        
+       
         function startGame() {
             if (!gamePrompt) {
                 alert('Please generate a prompt first by clicking "New Prompt"!');
                 return;
             }
-            
+           
             gameActive = true;
-            
+           
             // Create and resume audio context on user interaction
             audioContext = createAudioContext();
             if (audioContext && audioContext.state === 'suspended') {
@@ -600,35 +715,38 @@
                     console.error('Failed to resume AudioContext:', err);
                 });
             }
-            
+           
             // Random explosion time between 25 seconds (25000ms) and 90 seconds (90000ms)
             explosionTime = Math.random() * (90000 - 25000) + 25000;
             startTime = Date.now();
-            
+           
             document.getElementById('gameArea').style.display = 'block';
             document.getElementById('startBtn').disabled = true;
-            
+           
             updateCurrentPlayer();
             startBombTimer();
+
+            // Scroll to the game area
+            document.getElementById('gameArea').scrollIntoView({behavior: 'smooth'});
         }
-        
+       
         function updateCurrentPlayer() {
             const currentPlayerDiv = document.getElementById('currentPlayer');
             currentPlayerDiv.innerHTML = `
-                <strong>Say your answer out loud and click the shot to pass it!</strong><br>
+                <strong>Say your answer out loud and pass the shot/phone!</strong><br>
                 <span style="font-size: 1rem; opacity: 0.8; color: #ff6b6b;">[${currentCategory}]</span>
                 <span style="font-size: 1rem; opacity: 0.8;"> ${gamePrompt}</span>
             `;
         }
-        
+       
         function startBombTimer() {
             const bomb = document.getElementById('bomb');
             const spark = document.getElementById('spark');
             const timerDisplay = document.getElementById('timerDisplay');
-            
+           
             bomb.classList.add('ticking');
             spark.style.display = 'block';
-            
+           
             // Start continuous ticking sound - store interval globally so we can clear it
             let tickInterval = 1000;
             window.tickInterval = setInterval(() => {
@@ -638,17 +756,17 @@
                     clearInterval(window.tickInterval);
                 }
             }, tickInterval);
-            
+           
             bombTimer = setInterval(() => {
                 const elapsed = Date.now() - startTime;
                 const remaining = Math.max(0, explosionTime - elapsed);
-                
+               
                 // Update timer display (hidden)
                 const seconds = Math.ceil(remaining / 1000);
                 const minutes = Math.floor(seconds / 60);
                 const displaySeconds = seconds % 60;
                 timerDisplay.textContent = `${minutes}:${displaySeconds.toString().padStart(2, '0')}`;
-                
+               
                 // Speed up animation and ticking as time runs out
                 if (remaining < 10000) { // Last 10 seconds
                     bomb.style.animationDuration = '0.2s';
@@ -677,106 +795,112 @@
                         }, tickInterval);
                     }
                 }
-                
+               
                 if (remaining <= 0) {
                     clearInterval(window.tickInterval);
                     explodeBomb();
                 }
             }, 100);
         }
-        
+       
         function passBomb() {
             if (!gameActive) return;
-            
+           
             // Just continue the game - no player tracking needed
             // The bomb continues ticking until it explodes
         }
-        
+       
         function explodeBomb() {
             gameActive = false;
             clearInterval(bombTimer);
             if (window.tickInterval) {
                 clearInterval(window.tickInterval);
             }
-            
+           
             const bomb = document.getElementById('bomb');
             const spark = document.getElementById('spark');
-            
+           
             bomb.classList.remove('ticking');
             bomb.classList.add('exploding');
             spark.style.display = 'none';
-            
+           
             // Play explosion sound using the shared context
             if (audioContext) {
                 createExplosionSound(audioContext);
             }
-            
+           
             // Show game over screen
             setTimeout(() => {
                 document.getElementById('loserText').textContent = `Someone is getting a shot!`;
                 document.getElementById('gameOver').style.display = 'flex';
             }, 500);
         }
-        
+       
         function stopGame() {
             gameActive = false;
             clearInterval(bombTimer);
-            
+           
             const bomb = document.getElementById('bomb');
             const spark = document.getElementById('spark');
-            
+           
             bomb.classList.remove('ticking', 'exploding');
             bomb.style.animationDuration = '0.5s';
             spark.style.display = 'none';
-            
+           
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('startBtn').disabled = false;
             document.getElementById('timerDisplay').textContent = '--:--';
+
+            // Scroll up to current prompt
+            document.getElementById('currentPrompt').scrollIntoView({behavior: 'smooth'});
         }
-        
+       
         function goHome() {
             // Stop any active game first
             stopGame();
-            
+           
             // Hide game over screen if showing
             document.getElementById('gameOver').style.display = 'none';
-            
+           
             // Close audio context
             if (audioContext) {
                 audioContext.close();
                 audioContext = null;
             }
-            
+           
             // Generate a new prompt for next game
             generateNewPrompt();
         }
-        
+       
         function resetGame() {
             gameActive = false;
             clearInterval(bombTimer);
             if (window.tickInterval) {
                 clearInterval(window.tickInterval);
             }
-            
+           
             const bomb = document.getElementById('bomb');
             const spark = document.getElementById('spark');
-            
+           
             bomb.classList.remove('ticking', 'exploding');
             bomb.style.animationDuration = '0.5s';
             spark.style.display = 'none';
-            
+           
             document.getElementById('gameArea').style.display = 'none';
             document.getElementById('gameOver').style.display = 'none';
             document.getElementById('startBtn').disabled = false;
             document.getElementById('timerDisplay').textContent = '--:--';
-            
+           
             // Close audio context
             if (audioContext) {
                 audioContext.close();
                 audioContext = null;
             }
+
+            // Scroll up to current prompt
+            document.getElementById('currentPrompt').scrollIntoView({behavior: 'smooth'});
         }
-        
+       
         // Auto-generate first prompt on page load
         window.addEventListener('load', function() {
             generateNewPrompt();
@@ -784,3 +908,4 @@
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'991074c0c7364ed4',t:'MTc2MDg3ODgwMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
+```
